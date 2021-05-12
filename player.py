@@ -1,7 +1,9 @@
 from tkinter import *
 from tkinter import filedialog
+from mutagen.mp3 import MP3
 import pygame
 import os
+import time
 
 root = Tk()
 
@@ -51,10 +53,12 @@ def play_song():
     
     play_time()
 
+
 def stop_song():
     pygame.mixer.music.stop()
     playlist_box.selection_clear(ACTIVE)
-    
+    status_bar.config(text='')
+
 
 def pause_song():
     global is_paused
@@ -104,9 +108,21 @@ def previous_song():
 
 
 def play_time():
-    current_time = pygame.mixer.music.get_pos()/1000
-    status_bar.config(text=int(current_time))
+    current_position = pygame.mixer.music.get_pos()/1000
+    current_time = time.strftime('%M:%S', time.gmtime(current_position))
 
+    current_selection = playlist_box.curselection()
+    selected_song = playlist[current_selection[0]]['file_dir']
+
+    song_mut = MP3(selected_song)
+    raw_song_length = song_mut.info.length
+    converted_song_length = time.strftime('%M:%S', time.gmtime(raw_song_length))
+
+    test_label.config(text=converted_song_length)
+
+    if current_position >= 1:
+        status_bar.config(text=f'Time Elapsed: {current_time} of {converted_song_length}  ')
+    
     status_bar.after(1000, play_time)
 
 
@@ -165,7 +181,7 @@ playlist_menu.add_command(label="Clear Playlist", command=delete_all_songs)
 
 # Create status bar
 
-status_bar = Label(root, text="Current Status", bd=1, relief=GROOVE, anchor=E)
+status_bar = Label(root, text="", bd=1, relief=GROOVE, anchor=E)
 status_bar.pack(fill=X, side=BOTTOM, ipady=2)
 
 
