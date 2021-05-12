@@ -42,7 +42,6 @@ def delete_all_songs():
 
 
 def play_song():
-    # Add try/except block to ensure that a list option is ACTIVE
     global is_paused
     is_paused = False
     current_selection = playlist_box.curselection()
