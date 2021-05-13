@@ -10,7 +10,7 @@ import tkinter.ttk as ttk
 # CREATE GUI WINDOW
 root = Tk()
 root.title("MP3 Player")
-root.geometry("500x450")
+root.geometry("500x400")
 
 
 # INITIALIZE PYGAME FOR AUDIO
@@ -97,6 +97,8 @@ def pause_song():
 def next_song():
     global current_song_index, current_song_title, current_song_dir, is_stopped, is_paused
 
+    stop_song()
+
     if current_song_index < len(playlist)-1:
         current_song_index+=1
     else:
@@ -118,11 +120,11 @@ def next_song():
     pygame.mixer.music.load(current_song_dir)
     pygame.mixer.music.play(loops=0)
 
-    play_time()
-
 
 def previous_song():
     global current_song_index, current_song_title, current_song_dir, is_stopped, is_paused
+
+    stop_song()
 
     if current_song_index > 0:
         current_song_index-=1
@@ -145,7 +147,7 @@ def previous_song():
     pygame.mixer.music.load(current_song_dir)
     pygame.mixer.music.play(loops=0)
 
-    play_time()
+    # play_time()
 
 
 def play_time():
@@ -177,7 +179,6 @@ def play_time():
 
 def volume(x):
     pygame.mixer.music.set_volume(volume_slider.get())
-    test_label.config(text=volume_slider.get())
 
 
 def slide(x):
@@ -255,12 +256,6 @@ status_bar.pack(fill=X, side=BOTTOM, ipady=2)
 
 
 
-
-
-
-# Temp label to for output testing
-test_label = Label(root, text="")
-test_label.pack(pady=20)
 
 
 root.mainloop()
