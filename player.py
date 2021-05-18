@@ -10,7 +10,7 @@ import tkinter.ttk as ttk
 # CREATE GUI WINDOW
 root = Tk()
 root.title("MP3 Player")
-root.geometry("500x400")
+root.geometry("600x400")
 
 
 # INITIALIZE PYGAME FOR AUDIO
@@ -57,6 +57,8 @@ def delete_all_songs():
 def play_song():
     global is_paused, is_stopped, current_song_title, current_song_dir, current_song_index
     
+    stop_song()
+
     current_selection = playlist_box.curselection()
 
     if current_selection:
@@ -147,8 +149,6 @@ def previous_song():
     pygame.mixer.music.load(current_song_dir)
     pygame.mixer.music.play(loops=0)
 
-    # play_time()
-
 
 def play_time():
     global is_stopped, is_paused, current_song_dir
@@ -189,6 +189,48 @@ def slide(x):
         pygame.mixer.music.play(loops=0, start=song_slider.get())
 
 
+def up():
+    global current_song_index
+
+    current_selection = playlist_box.curselection()[0]
+    if current_selection == 0:
+        pass
+    else:
+        to_move = playlist[current_selection]
+        playlist.pop(current_selection)
+        playlist.insert(current_selection-1, to_move)
+        
+        playlist_box.delete(0, END)
+        for song in playlist:
+            playlist_box.insert(END, song['title'])
+
+        playlist_box.activate(current_selection-1)
+        playlist_box.selection_set(current_selection-1, last=None)
+        current_song_index = current_selection-1
+        # print(playlist)
+
+
+def down():
+    global current_song_index
+
+    current_selection = playlist_box.curselection()[0]
+    if current_selection == len(playlist)-1:
+        pass
+    else:
+        to_move = playlist[current_selection]
+        playlist.pop(current_selection)
+        playlist.insert(current_selection+1, to_move)
+        
+        playlist_box.delete(0, END)
+        for song in playlist:
+            playlist_box.insert(END, song['title'])
+
+        playlist_box.activate(current_selection+1)
+        playlist_box.selection_set(current_selection+1, last=None)
+        current_song_index = current_selection+1
+        # print(playlist)
+
+
 # GUI WINDOW MENU
 main_menu = Menu(root)
 root.config(menu=main_menu)
@@ -220,6 +262,15 @@ volume_frame.grid(row=0, column=1, padx=20)
 # Volume slider
 volume_slider = ttk.Scale(volume_frame, from_=1, to=0, value=1, orient=VERTICAL, length=125, command=volume) #add 'value' attribute and to set a default starting value (between from_ and to values)
 volume_slider.pack(pady=10)
+
+# Move song
+order_frame = LabelFrame(main_frame, text="Order")
+order_frame.grid(row=0, column=2)
+
+move_up_button = Button(order_frame, text="Up", command=up)
+move_up_button.pack(padx=5, pady=5)
+move_down_button = Button(order_frame, text="Down", command=down)
+move_down_button.pack(padx=5, pady=5)
 
 # Song slider
 song_slider = ttk.Scale(main_frame, from_=0, to=100, value=0, orient=HORIZONTAL, length=360, command=slide)
