@@ -57,8 +57,6 @@ def delete_all_songs():
 def play_song():
     global is_paused, is_stopped, current_song_title, current_song_dir, current_song_index
     
-    stop_song()
-
     current_selection = playlist_box.curselection()
 
     if current_selection:
@@ -207,7 +205,6 @@ def up():
         playlist_box.activate(current_selection-1)
         playlist_box.selection_set(current_selection-1, last=None)
         current_song_index = current_selection-1
-        # print(playlist)
 
 
 def down():
@@ -228,7 +225,6 @@ def down():
         playlist_box.activate(current_selection+1)
         playlist_box.selection_set(current_selection+1, last=None)
         current_song_index = current_selection+1
-        # print(playlist)
 
 
 # GUI WINDOW MENU
